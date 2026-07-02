@@ -12,7 +12,7 @@
 | --- | --- | --- |
 | 安装包 ZIP | `release/SJTU-Autologin-<version>.zip`（manifest 在根目录） | ✅ `npm run package` |
 | 图标 128×128 | `extension/icons/icon-128.png` | ✅ 已内置 |
-| 隐私政策 URL | `https://privacy.sj-tu.com/` | ✅ Cloudflare Pages 页面已准备 |
+| 隐私政策 URL | `https://privacy.sj-tu.com/sjtu-autologin/` | ✅ Cloudflare Pages 页面已准备 |
 | 商店截图（≥1 张） | 弹窗界面 + 登录页自动填写效果 | ⬜ **待你截图** |
 | 支持/联系邮箱 | 你的邮箱 | ⬜ 提交时填写 |
 | 类别 | Productivity / Tools（生产力工具） | 提交时选择 |
@@ -89,7 +89,7 @@ Chrome Web Store 提交时会逐项询问，如实勾选如下：
   - ✅ 不将用户数据出售给第三方
   - ✅ 不将用户数据用于与单一用途无关的目的
   - ✅ 不将用户数据用于确定信用度或放贷
-- **隐私政策 URL**：`https://privacy.sj-tu.com/`
+- **隐私政策 URL**：`https://privacy.sj-tu.com/sjtu-autologin/`
 
 ### Cloudflare Pages 部署
 
@@ -102,6 +102,8 @@ Chrome Web Store 提交时会逐项询问，如实勾选如下：
 - Custom domain：`privacy.sj-tu.com`
 
 推荐使用独立子域名 `privacy.sj-tu.com`，避免影响 `sj-tu.com` 上已有的网站和服务。
+当前扩展的隐私政策位于子路径 `/sjtu-autologin/`，便于将来在同一 Pages
+项目下继续增加其它产品的隐私政策。
 
 > Edge Partner Center 的数据披露问题与上面基本一致，按同样口径填写即可。
 
