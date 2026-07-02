@@ -9,6 +9,7 @@ import {
   initializeEngine,
   recognizeCaptcha
 } from "./ocr.js";
+import { message } from "./i18n.js";
 
 const CREDENTIAL_CIPHER_KEY = "credentialCipher";
 const CREDENTIAL_USER_KEY = "credentialUser";
@@ -34,10 +35,12 @@ function isLoginContentScript(sender) {
 
 async function saveCredentials({ user, pass }) {
   if (typeof user !== "string" || typeof pass !== "string") {
-    throw new Error("账号或密码格式无效");
+    throw new Error(message("invalidCredentialsFormat"));
   }
   const trimmedUser = user.trim();
-  if (!trimmedUser || !pass) throw new Error("账号和密码不能为空");
+  if (!trimmedUser || !pass) {
+    throw new Error(message("credentialsCannotBeEmpty"));
+  }
   const key = await getOrCreateKey();
   const cipher = await encryptCredentials(key, {
     user: trimmedUser,

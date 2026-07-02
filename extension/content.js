@@ -6,6 +6,7 @@ import {
   shouldAutoSubmit,
   SubmissionGate
 } from "./auto-login.js";
+import { message } from "./i18n.js";
 
 const CAPTCHA_IMAGE_SELECTORS = [
   "#captcha-img",
@@ -68,7 +69,7 @@ async function imageToDataUrl(image) {
   canvas.width = image.naturalWidth;
   canvas.height = image.naturalHeight;
   const context = canvas.getContext("2d");
-  if (!context) throw new Error("浏览器无法创建图片画布");
+  if (!context) throw new Error(message("pageCanvasUnavailable"));
   context.drawImage(image, 0, 0);
   return canvas.toDataURL("image/png");
 }
@@ -111,10 +112,14 @@ async function fillCaptcha() {
       type: "ocr",
       image: dataUrl
     });
-    if (!result?.ok) throw new Error(result?.error || "OCR 请求失败");
+    if (!result?.ok) {
+      throw new Error(result?.error || message("ocrRequestFailed"));
+    }
     const text = String(result.text).replace(/\s+/g, "");
     if (!/^[a-zA-Z0-9]{3,8}$/.test(text)) {
-      throw new Error(`识别结果格式异常：${text || "空"}`);
+      throw new Error(
+        message("invalidRecognition", text || message("emptyRecognition"))
+      );
     }
     setInputValue(input, text);
     input.dataset.sjtuOcrStatus = "filled";
@@ -211,7 +216,9 @@ async function fillStoredCredentials() {
     const result = await chrome.runtime.sendMessage({
       type: "credentials-get"
     });
-    if (!result?.ok) throw new Error(result?.error || "凭据请求失败");
+    if (!result?.ok) {
+      throw new Error(result?.error || message("credentialsRequestFailed"));
+    }
     if (!result.credentials) {
       storedCredentialsAbsent = true;
       return;

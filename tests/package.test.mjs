@@ -14,9 +14,11 @@ test("manifest is self-contained and MV3-compatible", async () => {
     await readFile(path.join(source, "manifest.json"), "utf8")
   );
   assert.equal(manifest.manifest_version, 3);
-  assert.equal(manifest.version, "0.4.1");
+  assert.equal(manifest.version, "0.4.2");
   assert.equal(manifest.minimum_chrome_version, "103");
   assert.equal(manifest.background.type, "module");
+  assert.equal(manifest.default_locale, "zh_CN");
+  assert.equal(manifest.name, "__MSG_extensionName__");
   assert.match(
     manifest.content_security_policy.extension_pages,
     /wasm-unsafe-eval/
@@ -30,16 +32,32 @@ test("bundled model has the pinned digest", async () => {
   assert.equal(createHash("sha256").update(model).digest("hex"), expectedHash);
 });
 
-test("extension source has no reserved underscore-prefixed names", async () => {
+test("extension source only uses the standard _locales reserved name", async () => {
   async function walk(directory) {
     const entries = await readdir(directory);
     for (const entry of entries) {
-      assert.equal(entry.startsWith("_"), false, entry);
+      if (entry.startsWith("_")) assert.equal(entry, "_locales");
       const child = path.join(directory, entry);
       if ((await stat(child)).isDirectory()) await walk(child);
     }
   }
   await walk(source);
+});
+
+test("Chinese and English locales provide localized package names", async () => {
+  const [chinese, english] = await Promise.all(
+    ["zh_CN", "en"].map(async (locale) =>
+      JSON.parse(
+        await readFile(
+          path.join(source, "_locales", locale, "messages.json"),
+          "utf8"
+        )
+      )
+    )
+  );
+  assert.equal(chinese.extensionName.message, "SJTU jAccount 验证码助手");
+  assert.equal(english.extensionName.message, "SJTU jAccount Captcha Helper");
+  assert.doesNotMatch(english.extensionName.message, /\p{Script=Han}/u);
 });
 
 test("content script targets the password-login captcha, not SMS or icon", async () => {

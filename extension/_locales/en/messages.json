@@ -1,0 +1,79 @@
+{
+  "extensionName": { "message": "SJTU jAccount Captcha Helper" },
+  "extensionShortName": { "message": "jAccount Helper" },
+  "extensionDescription": {
+    "message": "Recognizes and fills SJTU jAccount login captchas locally, with optional encrypted credential storage for auto-login."
+  },
+  "actionTitle": { "message": "SJTU jAccount Captcha Helper" },
+  "popupHeading": { "message": "jAccount Helper" },
+  "popupSubtitle": { "message": "Captcha recognition · Auto-login" },
+  "autoFillCaptcha": { "message": "Fill captchas automatically" },
+  "autoLogin": { "message": "Auto-login" },
+  "accountLabel": { "message": "jAccount username" },
+  "passwordLabel": { "message": "Password" },
+  "saveEncrypted": { "message": "Save encrypted on this device" },
+  "credentialPrivacy": {
+    "message": "Your username and password are AES-encrypted in this browser and used only to autofill jaccount.sjtu.edu.cn. They are never uploaded."
+  },
+  "savedAccount": { "message": "Saved account" },
+  "clear": { "message": "Clear" },
+  "retry": { "message": "Retry" },
+  "generalPrivacy": {
+    "message": "Captchas are processed only on this device. Auto-login is off by default and attempts at most three times per page. Saved credentials remain encrypted on this device."
+  },
+  "engineIdle": { "message": "OCR model has not loaded" },
+  "engineLoading": { "message": "Loading the local OCR model…" },
+  "engineReady": { "message": "Local OCR model is ready" },
+  "engineError": { "message": "Failed to load the OCR model" },
+  "backgroundUnavailable": {
+    "message": "Extension background process unavailable: $DETAIL$",
+    "placeholders": { "detail": { "content": "$1" } }
+  },
+  "credentialsRequired": { "message": "Enter your username and password" },
+  "saveFailed": { "message": "Failed to save credentials" },
+  "saveFailedDetail": {
+    "message": "Failed to save credentials: $DETAIL$",
+    "placeholders": { "detail": { "content": "$1" } }
+  },
+  "clearFailed": { "message": "Failed to clear credentials" },
+  "invalidCredentialsFormat": {
+    "message": "Invalid username or password format"
+  },
+  "credentialsCannotBeEmpty": {
+    "message": "Username and password cannot be empty"
+  },
+  "charsetLoadFailed": {
+    "message": "Failed to load the character set: HTTP $STATUS$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "invalidCharset": { "message": "Invalid character set format" },
+  "invalidCaptchaImage": { "message": "Invalid captcha image format" },
+  "captchaCanvasUnavailable": {
+    "message": "Unable to create a captcha canvas"
+  },
+  "pageCanvasUnavailable": {
+    "message": "The browser could not create an image canvas"
+  },
+  "ocrRequestFailed": { "message": "OCR request failed" },
+  "invalidRecognition": {
+    "message": "Unexpected recognition result: $RESULT$",
+    "placeholders": { "result": { "content": "$1" } }
+  },
+  "emptyRecognition": { "message": "empty" },
+  "credentialsRequestFailed": { "message": "Credential request failed" },
+  "modelDimensionsInvalid": {
+    "message": "Unexpected model output dimensions: $DIMENSIONS$",
+    "placeholders": { "dimensions": { "content": "$1" } }
+  },
+  "modelBatchInvalid": {
+    "message": "Unexpected model batch dimensions: $DIMENSIONS$",
+    "placeholders": { "dimensions": { "content": "$1" } }
+  },
+  "modelCharsetMismatch": {
+    "message": "Model class count $CLASSES$ does not match character set size $CHARACTERS$",
+    "placeholders": {
+      "classes": { "content": "$1" },
+      "characters": { "content": "$2" }
+    }
+  }
+}

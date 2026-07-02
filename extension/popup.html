@@ -4,25 +4,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="popup.css">
-    <title>jAccount 验证码助手</title>
+    <title data-i18n="actionTitle">jAccount 验证码助手</title>
   </head>
   <body>
     <header class="app-header">
       <img class="app-icon" src="icon-32.png" alt="" width="32" height="32">
       <div>
-        <h1>jAccount 助手</h1>
-        <p class="subtitle">验证码识别 · 自动登录</p>
+        <h1 data-i18n="popupHeading">jAccount 助手</h1>
+        <p class="subtitle" data-i18n="popupSubtitle">
+          验证码识别 · 自动登录
+        </p>
       </div>
     </header>
 
     <section class="card">
       <label class="option">
-        <span class="option-label">自动填写验证码</span>
+        <span class="option-label" data-i18n="autoFillCaptcha">
+          自动填写验证码
+        </span>
         <input id="enabled" type="checkbox">
         <span class="slider" aria-hidden="true"></span>
       </label>
       <label class="option">
-        <span class="option-label">自动登录</span>
+        <span class="option-label" data-i18n="autoLogin">自动登录</span>
         <input id="auto-login" type="checkbox">
         <span class="slider" aria-hidden="true"></span>
       </label>
@@ -30,36 +34,54 @@
 
     <form id="credential-form" class="card credentials" hidden>
       <label class="field">
-        jAccount 账号
+        <span data-i18n="accountLabel">jAccount 账号</span>
         <input id="credential-user" type="text" autocomplete="off">
       </label>
       <label class="field">
-        密码
+        <span data-i18n="passwordLabel">密码</span>
         <input id="credential-pass" type="password" autocomplete="off">
       </label>
-      <button id="credential-save" class="primary" type="submit">
+      <button
+        id="credential-save"
+        class="primary"
+        type="submit"
+        data-i18n="saveEncrypted"
+      >
         加密保存到本机
       </button>
       <p id="credential-error" class="error" hidden></p>
-      <p class="privacy">
+      <p class="privacy" data-i18n="credentialPrivacy">
         账号密码经 AES 加密保存在本机浏览器内，仅用于
         jaccount.sjtu.edu.cn 自动填充，不会上传。
       </p>
     </form>
     <p id="credential-saved" class="card credentials" hidden>
-      <span class="saved-label">已保存账号</span>
+      <span class="saved-label" data-i18n="savedAccount">已保存账号</span>
       <strong id="credential-name"></strong>
-      <button id="credential-clear" class="ghost danger" type="button">
+      <button
+        id="credential-clear"
+        class="ghost danger"
+        type="button"
+        data-i18n="clear"
+      >
         清除
       </button>
     </p>
 
     <div class="status-row">
-      <p id="status" class="loading">正在加载本地 OCR 模型…</p>
-      <button id="retry" class="ghost" type="button" hidden>重试</button>
+      <p id="status" class="loading" data-i18n="engineLoading">
+        正在加载本地 OCR 模型…
+      </p>
+      <button
+        id="retry"
+        class="ghost"
+        type="button"
+        data-i18n="retry"
+        hidden
+      >重试</button>
     </div>
 
-    <p class="privacy">
+    <p class="privacy" data-i18n="generalPrivacy">
       验证码仅在本机处理。自动登录默认关闭，每页最多尝试三次；
       保存的账号密码经加密后仅存于本机。
     </p>
