@@ -14,6 +14,8 @@ release/
 *.p12
 *.pfx
 credentials*
+!extension/credentials.js
+!tests/credentials.test.mjs
 secrets*
 
 # Debugging, logs, coverage, and temporary files
@@ -37,5 +39,6 @@ Thumbs.db
 # Local coding-agent state and instructions
 .agents/
 .codex/
+.claude/
 AGENTS.md
 CLAUDE.md

@@ -16,3 +16,19 @@ p { margin: 12px 0; }
 .loading { color: #5f6368; }
 .privacy { color: #5f6368; font-size: 12px; }
 button { padding: 6px 10px; cursor: pointer; }
+.credentials {
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+}
+.credentials label { display: block; margin-bottom: 8px; font-size: 13px; }
+.credentials input {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 2px;
+  padding: 5px 8px;
+}
+.credentials .privacy { margin: 8px 0 0; }
+#credential-saved { display: flex; align-items: center; gap: 6px; }
+#credential-name { flex: 1; overflow-wrap: anywhere; }

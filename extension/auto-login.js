@@ -5,14 +5,7 @@ export const MAX_AUTO_SUBMITS = 3;
 
 export function isCredentialFilled(input) {
   if (!input) return false;
-  const hasValue =
-    typeof input.value === "string" && input.value.trim().length > 0;
-  if (hasValue) return true;
-  try {
-    return Boolean(input.matches?.(":-webkit-autofill"));
-  } catch {
-    return false;
-  }
+  return typeof input.value === "string" && input.value.trim().length > 0;
 }
 
 export function shouldAutoSubmit({

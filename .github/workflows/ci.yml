@@ -35,3 +35,62 @@ jobs:
       - name: Build extension
         run: npm run build
 
+  # Extra gate for release PRs (develop -> main): the merge is what gets
+  # tagged and shipped, so require a version bump and a reviewable package.
+  release-readiness:
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Verify manifest and package.json versions match
+        shell: bash
+        run: |
+          manifest_version="$(node -p "JSON.parse(require('fs').readFileSync('extension/manifest.json', 'utf8')).version")"
+          package_version="$(node -p "require('./package.json').version")"
+          test "$manifest_version" = "$package_version" || {
+            echo "extension/manifest.json (${manifest_version}) and package.json (${package_version}) disagree" >&2
+            exit 1
+          }
+
+      - name: Verify version is bumped above ${{ github.base_ref }}
+        shell: bash
+        run: |
+          head_version="$(node -p "JSON.parse(require('fs').readFileSync('extension/manifest.json', 'utf8')).version")"
+          base_version="$(git show "origin/${GITHUB_BASE_REF}:extension/manifest.json" | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version")"
+          highest="$(printf '%s\n%s\n' "$base_version" "$head_version" | sort -V | tail -n 1)"
+          if [ "$head_version" = "$base_version" ] || [ "$highest" != "$head_version" ]; then
+            echo "Version ${head_version} must be greater than ${base_version} on ${GITHUB_BASE_REF}" >&2
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package extension for review
+        shell: bash
+        run: |
+          npm run build
+          version="$(node -p "JSON.parse(require('fs').readFileSync('dist/manifest.json', 'utf8')).version")"
+          mkdir -p release
+          (
+            cd dist
+            zip -r "../release/sjtu-jaccount-captcha-${version}.zip" .
+          )
+
+      - name: Upload release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate
+          path: release/*.zip
+          if-no-files-found: error
+
