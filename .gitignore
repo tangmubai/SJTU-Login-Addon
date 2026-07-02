@@ -37,5 +37,6 @@ Thumbs.db
 # Local coding-agent state and instructions
 .agents/
 .codex/
+.claude/
 AGENTS.md
 CLAUDE.md
