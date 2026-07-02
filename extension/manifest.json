@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SJTU jAccount 验证码助手",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "在浏览器本地识别并填写 SJTU jAccount 登录验证码，可选加密保存账号密码实现自动登录。",
   "minimum_chrome_version": "103",
   "permissions": ["storage"],

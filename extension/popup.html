@@ -7,37 +7,58 @@
     <title>jAccount 验证码助手</title>
   </head>
   <body>
-    <h1>验证码助手</h1>
-    <label class="option">
-      <input id="enabled" type="checkbox">
-      自动填写验证码
-    </label>
-    <label class="option">
-      <input id="auto-login" type="checkbox">
-      自动登录
-    </label>
-    <form id="credential-form" class="credentials" hidden>
-      <label>
+    <header class="app-header">
+      <img class="app-icon" src="icon-32.png" alt="" width="32" height="32">
+      <div>
+        <h1>jAccount 助手</h1>
+        <p class="subtitle">验证码识别 · 自动登录</p>
+      </div>
+    </header>
+
+    <section class="card">
+      <label class="option">
+        <span class="option-label">自动填写验证码</span>
+        <input id="enabled" type="checkbox">
+        <span class="slider" aria-hidden="true"></span>
+      </label>
+      <label class="option">
+        <span class="option-label">自动登录</span>
+        <input id="auto-login" type="checkbox">
+        <span class="slider" aria-hidden="true"></span>
+      </label>
+    </section>
+
+    <form id="credential-form" class="card credentials" hidden>
+      <label class="field">
         jAccount 账号
         <input id="credential-user" type="text" autocomplete="off">
       </label>
-      <label>
+      <label class="field">
         密码
         <input id="credential-pass" type="password" autocomplete="off">
       </label>
-      <button id="credential-save" type="submit">加密保存到本机</button>
+      <button id="credential-save" class="primary" type="submit">
+        加密保存到本机
+      </button>
       <p id="credential-error" class="error" hidden></p>
       <p class="privacy">
         账号密码经 AES 加密保存在本机浏览器内，仅用于
         jaccount.sjtu.edu.cn 自动填充，不会上传。
       </p>
     </form>
-    <p id="credential-saved" class="credentials" hidden>
-      已保存账号：<strong id="credential-name"></strong>
-      <button id="credential-clear" type="button">清除</button>
+    <p id="credential-saved" class="card credentials" hidden>
+      <span class="saved-label">已保存账号</span>
+      <strong id="credential-name"></strong>
+      <button id="credential-clear" class="ghost danger" type="button">
+        清除
+      </button>
     </p>
-    <p id="status" class="loading">正在加载本地 OCR 模型…</p>
-    <button id="retry" type="button" hidden>重试加载</button>
+
+    <div class="status-row">
+      <p id="status" class="loading">正在加载本地 OCR 模型…</p>
+      <button id="retry" class="ghost" type="button" hidden>重试</button>
+    </div>
+
     <p class="privacy">
       验证码仅在本机处理。自动登录默认关闭，每页最多尝试三次；
       保存的账号密码经加密后仅存于本机。

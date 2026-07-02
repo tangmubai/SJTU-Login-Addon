@@ -84,7 +84,7 @@ jobs:
           mkdir -p release
           (
             cd dist
-            zip -r "../release/sjtu-jaccount-captcha-${version}.zip" .
+            zip -r "../release/SJTU-Autologin-${version}.zip" .
           )
 
       - name: Upload release candidate

@@ -49,20 +49,44 @@ jobs:
         run: |
           npm run build
           version="$(node -p "JSON.parse(require('fs').readFileSync('dist/manifest.json', 'utf8')).version")"
+          echo "EXT_VERSION=${version}" >> "$GITHUB_ENV"
           mkdir -p release
           (
             cd dist
-            zip -r "../release/sjtu-jaccount-captcha-${version}.zip" .
+            zip -r "../release/SJTU-Autologin-${version}.zip" .
           )
+
+      - name: Pack signed .crx
+        shell: bash
+        env:
+          CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
+        run: |
+          if [ -z "$CRX_PRIVATE_KEY" ]; then
+            echo "Missing CRX_PRIVATE_KEY repository secret (PEM private key for signing the .crx)" >&2
+            exit 1
+          fi
+          key_file="$RUNNER_TEMP/crx-key.pem"
+          printf '%s\n' "$CRX_PRIVATE_KEY" > "$key_file"
+          google-chrome --no-sandbox --pack-extension="$PWD/dist" --pack-extension-key="$key_file"
+          rm -f "$key_file"
+          test -f dist.crx || {
+            echo "Chrome did not produce dist.crx" >&2
+            exit 1
+          }
+          mv dist.crx "release/SJTU-Autologin-${EXT_VERSION}.crx"
+
+      - name: Generate checksums
+        shell: bash
+        run: |
           (
             cd release
-            sha256sum *.zip > SHA256SUMS.txt
+            sha256sum *.zip *.crx > SHA256SUMS.txt
           )
 
       - name: Upload packaged extension
         uses: actions/upload-artifact@v4
         with:
-          name: sjtu-jaccount-captcha
+          name: SJTU-Autologin
           path: release/*
           if-no-files-found: error
 
@@ -70,4 +94,4 @@ jobs:
         if: github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" release/*.zip release/SHA256SUMS.txt --generate-notes --verify-tag
+        run: gh release create "${GITHUB_REF_NAME}" release/*.zip release/*.crx release/SHA256SUMS.txt --generate-notes --verify-tag

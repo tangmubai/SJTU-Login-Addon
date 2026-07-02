@@ -10,7 +10,7 @@ const manifest = JSON.parse(
 );
 const archive = path.join(
   release,
-  `sjtu-jaccount-captcha-${manifest.version}.zip`
+  `SJTU-Autologin-${manifest.version}.zip`
 );
 
 await mkdir(release, { recursive: true });
