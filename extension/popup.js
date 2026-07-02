@@ -1,3 +1,5 @@
+import { message } from "./i18n.js";
+
 const enabled = document.querySelector("#enabled");
 const autoLogin = document.querySelector("#auto-login");
 const status = document.querySelector("#status");
@@ -11,11 +13,16 @@ const credentialName = document.querySelector("#credential-name");
 const credentialClear = document.querySelector("#credential-clear");
 let pollTimer;
 
+document.documentElement.lang = message("@@ui_locale").replace("_", "-");
+for (const element of document.querySelectorAll("[data-i18n]")) {
+  element.textContent = message(element.dataset.i18n);
+}
+
 const STATUS_TEXT = {
-  idle: "OCR 模型尚未加载",
-  loading: "正在加载本地 OCR 模型…",
-  ready: "本地 OCR 模型已就绪",
-  error: "OCR 模型加载失败"
+  idle: message("engineIdle"),
+  loading: message("engineLoading"),
+  ready: message("engineReady"),
+  error: message("engineError")
 };
 
 async function checkEngine({ retryEngine = false } = {}) {
@@ -41,7 +48,7 @@ async function checkEngine({ retryEngine = false } = {}) {
       pollTimer = window.setTimeout(checkEngine, 500);
     }
   } catch (error) {
-    status.textContent = `扩展后台不可用：${error.message}`;
+    status.textContent = message("backgroundUnavailable", error.message);
     status.className = "error";
     retry.hidden = false;
   }
@@ -98,7 +105,7 @@ credentialForm.addEventListener("submit", async (event) => {
   const user = credentialUser.value.trim();
   const pass = credentialPass.value;
   if (!user || !pass) {
-    showCredentialError("请填写账号和密码");
+    showCredentialError(message("credentialsRequired"));
     return;
   }
   try {
@@ -107,12 +114,12 @@ credentialForm.addEventListener("submit", async (event) => {
       user,
       pass
     });
-    if (!result?.ok) throw new Error(result?.error || "保存失败");
+    if (!result?.ok) throw new Error(result?.error || message("saveFailed"));
     credentialUser.value = "";
     credentialPass.value = "";
     refreshCredentialUI();
   } catch (error) {
-    showCredentialError(`保存失败：${error.message}`);
+    showCredentialError(message("saveFailedDetail", error.message));
   }
 });
 credentialClear.addEventListener("click", async () => {
@@ -120,7 +127,7 @@ credentialClear.addEventListener("click", async () => {
     const result = await chrome.runtime.sendMessage({
       type: "credentials-clear"
     });
-    if (!result?.ok) throw new Error(result?.error || "清除失败");
+    if (!result?.ok) throw new Error(result?.error || message("clearFailed"));
   } finally {
     refreshCredentialUI();
   }

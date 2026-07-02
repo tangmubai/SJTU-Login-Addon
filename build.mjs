@@ -1,5 +1,6 @@
 import { build } from "esbuild";
 import {
+  cp,
   copyFile,
   mkdir,
   readFile,
@@ -85,6 +86,9 @@ await Promise.all(
     copyFile(path.join(source, name), path.join(output, name))
   )
 );
+await cp(path.join(source, "_locales"), path.join(output, "_locales"), {
+  recursive: true
+});
 await Promise.all(
   [16, 32, 48, 128].map((size) =>
     copyFile(

@@ -1,0 +1,71 @@
+{
+  "extensionName": { "message": "SJTU jAccount 验证码助手" },
+  "extensionShortName": { "message": "jAccount 助手" },
+  "extensionDescription": {
+    "message": "在浏览器本地识别并填写 SJTU jAccount 登录验证码，可选加密保存账号密码实现自动登录。"
+  },
+  "actionTitle": { "message": "jAccount 验证码助手" },
+  "popupHeading": { "message": "jAccount 助手" },
+  "popupSubtitle": { "message": "验证码识别 · 自动登录" },
+  "autoFillCaptcha": { "message": "自动填写验证码" },
+  "autoLogin": { "message": "自动登录" },
+  "accountLabel": { "message": "jAccount 账号" },
+  "passwordLabel": { "message": "密码" },
+  "saveEncrypted": { "message": "加密保存到本机" },
+  "credentialPrivacy": {
+    "message": "账号密码经 AES 加密保存在本机浏览器内，仅用于 jaccount.sjtu.edu.cn 自动填充，不会上传。"
+  },
+  "savedAccount": { "message": "已保存账号" },
+  "clear": { "message": "清除" },
+  "retry": { "message": "重试" },
+  "generalPrivacy": {
+    "message": "验证码仅在本机处理。自动登录默认关闭，每页最多尝试三次；保存的账号密码经加密后仅存于本机。"
+  },
+  "engineIdle": { "message": "OCR 模型尚未加载" },
+  "engineLoading": { "message": "正在加载本地 OCR 模型…" },
+  "engineReady": { "message": "本地 OCR 模型已就绪" },
+  "engineError": { "message": "OCR 模型加载失败" },
+  "backgroundUnavailable": {
+    "message": "扩展后台不可用：$DETAIL$",
+    "placeholders": { "detail": { "content": "$1" } }
+  },
+  "credentialsRequired": { "message": "请填写账号和密码" },
+  "saveFailed": { "message": "保存失败" },
+  "saveFailedDetail": {
+    "message": "保存失败：$DETAIL$",
+    "placeholders": { "detail": { "content": "$1" } }
+  },
+  "clearFailed": { "message": "清除失败" },
+  "invalidCredentialsFormat": { "message": "账号或密码格式无效" },
+  "credentialsCannotBeEmpty": { "message": "账号和密码不能为空" },
+  "charsetLoadFailed": {
+    "message": "字符集加载失败：HTTP $STATUS$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "invalidCharset": { "message": "字符集格式无效" },
+  "invalidCaptchaImage": { "message": "验证码图片格式无效" },
+  "captchaCanvasUnavailable": { "message": "无法创建验证码画布" },
+  "pageCanvasUnavailable": { "message": "浏览器无法创建图片画布" },
+  "ocrRequestFailed": { "message": "OCR 请求失败" },
+  "invalidRecognition": {
+    "message": "识别结果格式异常：$RESULT$",
+    "placeholders": { "result": { "content": "$1" } }
+  },
+  "emptyRecognition": { "message": "空" },
+  "credentialsRequestFailed": { "message": "凭据请求失败" },
+  "modelDimensionsInvalid": {
+    "message": "模型输出维度异常：$DIMENSIONS$",
+    "placeholders": { "dimensions": { "content": "$1" } }
+  },
+  "modelBatchInvalid": {
+    "message": "模型输出批次维度异常：$DIMENSIONS$",
+    "placeholders": { "dimensions": { "content": "$1" } }
+  },
+  "modelCharsetMismatch": {
+    "message": "模型类别数 $CLASSES$ 与字符集 $CHARACTERS$ 不一致",
+    "placeholders": {
+      "classes": { "content": "$1" },
+      "characters": { "content": "$2" }
+    }
+  }
+}

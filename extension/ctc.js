@@ -1,6 +1,8 @@
+import { message } from "./i18n.js";
+
 export function decodeCtc(data, dims, charset) {
   if (dims.length !== 3) {
-    throw new Error(`模型输出维度异常：${dims.join("x")}`);
+    throw new Error(message("modelDimensionsInvalid", dims.join("x")));
   }
   let sequenceLength;
   let classCount;
@@ -13,11 +15,14 @@ export function decodeCtc(data, dims, charset) {
     [, sequenceLength, classCount] = dims;
     valueAt = (step, cls) => data[step * classCount + cls];
   } else {
-    throw new Error(`模型输出批次维度异常：${dims.join("x")}`);
+    throw new Error(message("modelBatchInvalid", dims.join("x")));
   }
   if (classCount !== charset.length) {
     throw new Error(
-      `模型类别数 ${classCount} 与字符集 ${charset.length} 不一致`
+      message("modelCharsetMismatch", [
+        String(classCount),
+        String(charset.length)
+      ])
     );
   }
 

@@ -32,6 +32,6 @@ test("decodes batch-first CTC output", () => {
 test("rejects a mismatched charset", () => {
   assert.throws(
     () => decodeCtc(new Float32Array(6), [2, 1, 3], ["", "a"]),
-    /类别数/
+    /modelCharsetMismatch/
   );
 });

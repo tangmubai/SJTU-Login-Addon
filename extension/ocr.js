@@ -1,5 +1,6 @@
 import * as ort from "onnxruntime-web/wasm";
 import { decodeCtc } from "./ctc.js";
+import { message } from "./i18n.js";
 
 const MODEL_URL = "assets/common.onnx";
 const CHARSET_URL = "assets/charset-beta.json";
@@ -51,17 +52,19 @@ export function initializeEngine({ retry = false } = {}) {
 
 async function loadCharset() {
   const response = await fetch(chrome.runtime.getURL(CHARSET_URL));
-  if (!response.ok) throw new Error(`字符集加载失败：HTTP ${response.status}`);
+  if (!response.ok) {
+    throw new Error(message("charsetLoadFailed", String(response.status)));
+  }
   const charset = await response.json();
   if (!Array.isArray(charset) || charset[0] !== "") {
-    throw new Error("字符集格式无效");
+    throw new Error(message("invalidCharset"));
   }
   return charset;
 }
 
 export async function recognizeCaptcha(dataUrl) {
   if (typeof dataUrl !== "string" || !dataUrl.startsWith("data:image/")) {
-    throw new Error("验证码图片格式无效");
+    throw new Error(message("invalidCaptchaImage"));
   }
   const [session, charset] = await Promise.all([
     initializeEngine(),
@@ -91,7 +94,7 @@ async function preprocessImage(dataUrl) {
     );
     const canvas = new OffscreenCanvas(width, TARGET_HEIGHT);
     const context = canvas.getContext("2d", { willReadFrequently: true });
-    if (!context) throw new Error("无法创建验证码画布");
+    if (!context) throw new Error(message("captchaCanvasUnavailable"));
     context.imageSmoothingEnabled = true;
     context.imageSmoothingQuality = "high";
     context.drawImage(bitmap, 0, 0, width, TARGET_HEIGHT);
