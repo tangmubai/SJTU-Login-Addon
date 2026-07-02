@@ -16,10 +16,31 @@
       <input id="auto-login" type="checkbox">
       自动登录
     </label>
+    <form id="credential-form" class="credentials" hidden>
+      <label>
+        jAccount 账号
+        <input id="credential-user" type="text" autocomplete="off">
+      </label>
+      <label>
+        密码
+        <input id="credential-pass" type="password" autocomplete="off">
+      </label>
+      <button id="credential-save" type="submit">加密保存到本机</button>
+      <p id="credential-error" class="error" hidden></p>
+      <p class="privacy">
+        账号密码经 AES 加密保存在本机浏览器内，仅用于
+        jaccount.sjtu.edu.cn 自动填充，不会上传。
+      </p>
+    </form>
+    <p id="credential-saved" class="credentials" hidden>
+      已保存账号：<strong id="credential-name"></strong>
+      <button id="credential-clear" type="button">清除</button>
+    </p>
     <p id="status" class="loading">正在加载本地 OCR 模型…</p>
     <button id="retry" type="button" hidden>重试加载</button>
     <p class="privacy">
-      验证码仅在本机处理。自动登录默认关闭，每页最多尝试三次。
+      验证码仅在本机处理。自动登录默认关闭，每页最多尝试三次；
+      保存的账号密码经加密后仅存于本机。
     </p>
     <script src="popup.js"></script>
   </body>

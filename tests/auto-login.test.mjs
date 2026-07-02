@@ -11,22 +11,17 @@ import {
   SubmissionGate
 } from "../extension/auto-login.js";
 
-test("detects value and Chromium autofill without retaining credentials", () => {
-  assert.equal(
-    isCredentialFilled({ value: "saved-user", matches: () => false }),
-    true
-  );
-  assert.equal(
-    isCredentialFilled({ value: "", matches: (selector) => selector === ":-webkit-autofill" }),
-    true
-  );
-  assert.equal(isCredentialFilled({ value: "", matches: () => false }), false);
+test("only trusts values that page scripts can actually read", () => {
+  assert.equal(isCredentialFilled({ value: "saved-user" }), true);
+  assert.equal(isCredentialFilled({ value: "  " }), false);
+  assert.equal(isCredentialFilled({ value: "" }), false);
+  assert.equal(isCredentialFilled(null), false);
+  // Chromium 预填充（:-webkit-autofill）状态下 value 对脚本不可读，
+  // 不能视为已填充，否则会以空密码自动提交。
   assert.equal(
     isCredentialFilled({
       value: "",
-      matches: () => {
-        throw new Error("unsupported selector");
-      }
+      matches: (selector) => selector === ":-webkit-autofill"
     }),
     false
   );

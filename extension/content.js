@@ -26,6 +26,8 @@ let autoLoginTimer;
 let pendingAutoLoginFingerprint = "";
 let autofillPollTimer;
 let autofillPollStopTimer;
+let credentialRequestPending = false;
+let storedCredentialsAbsent = false;
 const submissionGate = new SubmissionGate();
 
 async function getSettings() {
@@ -194,13 +196,47 @@ async function requestAutoLogin(fingerprint = lastImageData) {
   }, AUTO_LOGIN_DELAY_MS);
 }
 
+async function fillStoredCredentials() {
+  if (credentialRequestPending || storedCredentialsAbsent) return;
+  const { enabled, autoLogin } = await getSettings();
+  if (!enabled || !autoLogin) return;
+  const { user, pass } = passwordLoginElements();
+  if (!isVisibleInput(user) || !isVisibleInput(pass)) return;
+  const needsUser = !user.value.trim();
+  const needsPass = !pass.value;
+  if (!needsUser && !needsPass) return;
+
+  credentialRequestPending = true;
+  try {
+    const result = await chrome.runtime.sendMessage({
+      type: "credentials-get"
+    });
+    if (!result?.ok) throw new Error(result?.error || "凭据请求失败");
+    if (!result.credentials) {
+      storedCredentialsAbsent = true;
+      return;
+    }
+    if (needsUser && !user.value.trim()) {
+      setInputValue(user, result.credentials.user);
+    }
+    if (needsPass && !pass.value) {
+      setInputValue(pass, result.credentials.pass);
+    }
+    requestAutoLogin();
+  } catch (error) {
+    console.warn("[SJTU CAPTCHA OCR] 获取本地凭据失败", error);
+  } finally {
+    credentialRequestPending = false;
+  }
+}
+
 function startAutofillPolling() {
   window.clearInterval(autofillPollTimer);
   window.clearTimeout(autofillPollStopTimer);
-  autofillPollTimer = window.setInterval(
-    () => requestAutoLogin(),
-    AUTOFILL_POLL_INTERVAL_MS
-  );
+  autofillPollTimer = window.setInterval(() => {
+    fillStoredCredentials();
+    requestAutoLogin();
+  }, AUTOFILL_POLL_INTERVAL_MS);
   autofillPollStopTimer = window.setTimeout(() => {
     window.clearInterval(autofillPollTimer);
     autofillPollTimer = undefined;
@@ -209,7 +245,10 @@ function startAutofillPolling() {
 
 const observer = new MutationObserver(() => {
   window.clearTimeout(debounceTimer);
-  debounceTimer = window.setTimeout(fillCaptcha, 100);
+  debounceTimer = window.setTimeout(() => {
+    fillStoredCredentials();
+    fillCaptcha();
+  }, 100);
 });
 
 observer.observe(document.documentElement, {
@@ -218,7 +257,10 @@ observer.observe(document.documentElement, {
   attributes: true,
   attributeFilter: ["src"]
 });
-window.addEventListener("load", fillCaptcha);
+window.addEventListener("load", () => {
+  fillStoredCredentials();
+  fillCaptcha();
+});
 document.addEventListener(
   "load",
   (event) => {
@@ -230,8 +272,11 @@ for (const eventName of ["input", "change", "focus", "animationstart"]) {
   document.addEventListener(eventName, () => requestAutoLogin(), true);
 }
 chrome.storage.onChanged.addListener(() => {
+  storedCredentialsAbsent = false;
+  fillStoredCredentials();
   fillCaptcha();
   requestAutoLogin();
 });
 startAutofillPolling();
+fillStoredCredentials();
 fillCaptcha();

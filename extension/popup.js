@@ -2,6 +2,13 @@ const enabled = document.querySelector("#enabled");
 const autoLogin = document.querySelector("#auto-login");
 const status = document.querySelector("#status");
 const retry = document.querySelector("#retry");
+const credentialForm = document.querySelector("#credential-form");
+const credentialUser = document.querySelector("#credential-user");
+const credentialPass = document.querySelector("#credential-pass");
+const credentialError = document.querySelector("#credential-error");
+const credentialSaved = document.querySelector("#credential-saved");
+const credentialName = document.querySelector("#credential-name");
+const credentialClear = document.querySelector("#credential-clear");
 let pollTimer;
 
 const STATUS_TEXT = {
@@ -44,17 +51,79 @@ function updateAutoLoginAvailability() {
   autoLogin.disabled = !enabled.checked;
 }
 
+function showCredentialError(text) {
+  credentialError.textContent = text;
+  credentialError.hidden = !text;
+}
+
+async function refreshCredentialUI() {
+  const active = enabled.checked && autoLogin.checked;
+  if (!active) {
+    credentialForm.hidden = true;
+    credentialSaved.hidden = true;
+    return;
+  }
+  try {
+    const result = await chrome.runtime.sendMessage({
+      type: "credentials-status"
+    });
+    const saved = Boolean(result?.ok && result.saved);
+    credentialForm.hidden = saved;
+    credentialSaved.hidden = !saved;
+    credentialName.textContent = saved ? result.user : "";
+  } catch {
+    credentialForm.hidden = true;
+    credentialSaved.hidden = true;
+  }
+}
+
 chrome.storage.local.get({ enabled: true, autoLogin: false }).then((data) => {
   enabled.checked = data.enabled;
   autoLogin.checked = data.autoLogin;
   updateAutoLoginAvailability();
+  refreshCredentialUI();
 });
 enabled.addEventListener("change", () => {
   chrome.storage.local.set({ enabled: enabled.checked });
   updateAutoLoginAvailability();
+  refreshCredentialUI();
 });
 autoLogin.addEventListener("change", () => {
   chrome.storage.local.set({ autoLogin: autoLogin.checked });
+  refreshCredentialUI();
+});
+credentialForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  showCredentialError("");
+  const user = credentialUser.value.trim();
+  const pass = credentialPass.value;
+  if (!user || !pass) {
+    showCredentialError("请填写账号和密码");
+    return;
+  }
+  try {
+    const result = await chrome.runtime.sendMessage({
+      type: "credentials-save",
+      user,
+      pass
+    });
+    if (!result?.ok) throw new Error(result?.error || "保存失败");
+    credentialUser.value = "";
+    credentialPass.value = "";
+    refreshCredentialUI();
+  } catch (error) {
+    showCredentialError(`保存失败：${error.message}`);
+  }
+});
+credentialClear.addEventListener("click", async () => {
+  try {
+    const result = await chrome.runtime.sendMessage({
+      type: "credentials-clear"
+    });
+    if (!result?.ok) throw new Error(result?.error || "清除失败");
+  } finally {
+    refreshCredentialUI();
+  }
 });
 retry.addEventListener("click", () => checkEngine({ retryEngine: true }));
 checkEngine();
