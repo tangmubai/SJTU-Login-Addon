@@ -64,12 +64,11 @@ jobs:
 
       - name: Verify version is bumped above ${{ github.base_ref }}
         shell: bash
-        env:
-          ALLOW_REBUILD: ${{ contains(github.event.pull_request.labels.*.name, 'rebuild-release') }}
         run: |
           head_version="$(node -p "JSON.parse(require('fs').readFileSync('extension/manifest.json', 'utf8')).version")"
           base_version="$(git show "origin/${GITHUB_BASE_REF}:extension/manifest.json" | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version")"
-          if [ "$head_version" = "$base_version" ] && [ "$ALLOW_REBUILD" = "true" ]; then
+          allow_rebuild="$(node -e "const event = require(process.env.GITHUB_EVENT_PATH); process.stdout.write(String(event.pull_request.labels.some(({ name }) => name === 'rebuild-release')))")"
+          if [ "$head_version" = "$base_version" ] && [ "$allow_rebuild" = "true" ]; then
             echo "Rebuilding explicitly labeled release ${head_version}"
             exit 0
           fi
